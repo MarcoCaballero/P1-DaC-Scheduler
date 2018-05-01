@@ -1,47 +1,47 @@
 package io.github.marcocaballero;
 
-import java.util.ArrayList;
+public class DacScheduler extends Algorithm {
 
-public class DaCScheduler extends Scheduler {
+	public static int[][] generateResults(int n) {
+		int[][] t = checkOdd(n);
 
-	public DaCScheduler(ArrayList<Team> teams) {
-		super(teams);
+		divide(t, 0, (t.length - 1));
+
+		return t;
+
 	}
 
-	@Override
-	public Team[][] generateSolution() {
-		Team[][] matches = new Team[teams.size() -1][teams.size()];
-		divideAndConquer(matches, 0, teams.size() - 1);
-		return matches;
-	}
+	public static void divide(int[][] t, int rowMin, int rowMax) {
+		int medio;
 
-	private Team[][] divideAndConquer(Team[][] matches, int first, int last) {
-		int middle;
-		if (last - first == 1) {
-			matches[0][first] = teams.get(last);
-			matches[0][last] = teams.get(first);
+		if (rowMax - rowMin == 1) {
+			t[rowMin][0] = rowMax;
+			t[rowMax][0] = rowMin;
 		} else {
-			middle = ((first + last) / 2) + first;
-			divideAndConquer(matches, first, middle);
-			divideAndConquer(matches, middle + 1, last);
-			mergeResults(matches, first, middle, middle, last - 1, middle + 1);
-			mergeResults(matches, middle + 1, last, middle, last - 1, first);
+			medio = ((rowMax + rowMin) / 2);
+
+			divide(t, medio + 1, rowMax);
+			divide(t, rowMin, medio);
+
+			conquer(t, rowMin, medio, (medio - rowMin), (medio - rowMin) * 2, medio + 1);
+			conquer(t, (medio + 1), rowMax, (rowMax - (medio + 1)), (rowMax - (medio + 1)) * 2, rowMin);
 		}
-		return matches;
 	}
 
-	private Team[][] mergeResults(Team[][] matches, int bottomTeamPos, int upperTeamPos, int bottomWeek, int upperWeek, int pivotTeamPos) {
-		for (int week = bottomWeek; week <= upperWeek; week++) {
-			int pos = pivotTeamPos + week - bottomWeek;
-			matches[week][bottomTeamPos] = teams.get(pos);
+	public static int[][] conquer(int[][] t, int rowMin, int rowMax, int colMin, int colMax, int eqInic) {
+
+		for (int sum = 0, j = colMin; j <= colMax; sum++, j++) { // var reduce; (eqInic + j ) - colMin;
+			t[rowMin][j] = (eqInic + sum);
 		}
-		
-		for (int t = bottomTeamPos + 1; t <= upperTeamPos; t++) {
-			matches[t][bottomWeek] = matches[t-1][upperWeek];
-			for (int week = bottomWeek + 1; week <= upperWeek; week++) {
-				matches[t][week] = matches[t-1][week - 1];
+
+		for (int i = rowMin + 1; i <= rowMax; i++) {
+			t[i][colMin] = t[i - 1][colMax];
+
+			for (int j = colMin + 1; j <= colMax; j++) {
+				t[i][j] = t[i - 1][j - 1];
 			}
 		}
-		return matches;
+
+		return t;
 	}
 }
