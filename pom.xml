@@ -13,7 +13,6 @@
 		<java.version>1.8</java.version>
 		<application-main>io.github.marcocaballero.Main</application-main>
 	</properties>
-
 	<build>
 		<plugins>
 			<plugin>
