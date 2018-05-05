@@ -32,7 +32,7 @@ public class Algorithm {
 		if (n % 2 == 0) {
 			t = new int[n][n - 1];
 		} else {
-			System.out.println("The N-Team => " + (n+1) + " ( row: " + n + ") is the break for the teams \n" );
+			System.out.println("The N-Team => " + (n) + " ( row: " + (n+1) + ") is the break for the teams in the column j (week = j) \n" );
 			t = new int[n + 1][n];
 		}
 		return t;
